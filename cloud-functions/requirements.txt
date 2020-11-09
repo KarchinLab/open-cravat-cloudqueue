@@ -1,0 +1,7 @@
+# Required installs
+google-api-python-client
+oauth2client==2.2.0
+google-cloud-pubsub
+google-cloud-error-reporting
+firebase-admin
+pyyaml

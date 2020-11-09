@@ -1,0 +1,24 @@
+runtime: python37
+handlers:
+- url: /static
+  static_dir: static
+- url: /.*
+  script: auto
+env_variables:
+  GCP_PROJECT: ocq-deploy-repeatable
+  OCQ_SERVICE_ACCOUNT_NAME: ocq-acct
+  OCQ_SERVICE_ACCOUNT_DESC: OC cloudqueue account
+  OCQ_SERVICE_ACCOUNT_DISPLAY: OCQ
+  OCQ_JOB_START_TOPIC: oc-job-start
+  OCQ_JOB_START_SUB: oc-job-start-sub
+  OCQ_JOB_START_FUNC: oc-job-start-func
+  OCQ_JOB_DONE_TOPIC: oc-job-done
+  OCQ_JOB_DONE_SUB: oc-job-done-sub
+  OCQ_JOB_DONE_FUNC: oc-job-done-func
+  OCQ_INSTANCE_CREATE_FUNC: oc-instance-create
+  OCQ_INSTANCE_FAMILY: oc-runner-images
+  OCQ_WORKER_LABEL: oc-worker
+  OCQ_WORKER_LIMIT: '2'
+  OCQ_BUCKET: oc-web-ae-testing.appspot.com
+  FUNCTION_REGION: us-central1
+  OCQ_SERVICE_ACCOUNT_EMAIL: ocq-acct@ocq-deploy-repeatable.iam.gserviceaccount.com

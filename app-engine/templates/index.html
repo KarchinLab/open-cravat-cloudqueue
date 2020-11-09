@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title>Datastore and Firebase Auth Example</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+  <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAQmnv_8m1KFdfZ4lhmLeyVS393R0MQr4c",
+      authDomain: "oc-web-ae-testing.firebaseapp.com",
+      databaseURL: "https://oc-web-ae-testing.firebaseio.com",
+      projectId: "oc-web-ae-testing",
+      storageBucket: "oc-web-ae-testing.appspot.com",
+      messagingSenderId: "723978651602",
+      appId: "1:723978651602:web:e080e9ee70352e3df2aa0b"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+
+
+</head>
+<body>
+<h1>OpenCRAVAT Web Submission Engine</h1>
+
+<div id="firebaseui-auth-container"></div>
+
+<br>
+<button id="sign-out" hidden=true>Sign Out</button>
+
+<div id="login-info" hidden=true>
+  <h2>Login info:</h2>
+  {% if user_data %}    <dl>
+      <dt>Name</dt><dd>{{ user_data['name'] }}</dd>
+      <dt>Email</dt><dd>{{ user_data['email'] }}</dd>
+    </dl>
+  {% elif error_message %}    <p>Error: {{ error_message }}</p>
+  {% endif %}</div>
+
+</body>
+
+
+</html>

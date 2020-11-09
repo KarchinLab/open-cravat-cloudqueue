@@ -1,0 +1,32 @@
+# Make sure changes here match those in ../env.yml:env_variables
+
+GCP_PROJECT: ocq-dep
+
+# Run everything under one service account
+OCQ_SERVICE_ACCOUNT_NAME: ocq-acct
+OCQ_SERVICE_ACCOUNT_DESC: OC cloudqueue account
+OCQ_SERVICE_ACCOUNT_DISPLAY: OCQ
+
+# Handle new job submissions
+OCQ_JOB_START_TOPIC: oc-job-start
+OCQ_JOB_START_SUB: oc-job-start-sub
+OCQ_JOB_START_FUNC: oc-job-start-func
+
+# Handle finished jobs
+OCQ_JOB_DONE_TOPIC: oc-job-done
+OCQ_JOB_DONE_SUB: oc-job-done-sub
+OCQ_JOB_DONE_FUNC: oc-job-done-func
+OCQ_INSTANCE_CREATE_FUNC: oc-instance-create
+
+# Family that worker instances are in
+OCQ_INSTANCE_FAMILY: oc-runner-images
+# Label for annotation workers
+OCQ_WORKER_LABEL: oc-worker
+# Limit simultaneous running workers. Must be string type.
+OCQ_WORKER_LIMIT: '2'
+
+# Bucket for job input/output
+OCQ_BUCKET: oc-web-ae-testing.appspot.com
+
+# Need for python 3.8
+FUNCTION_REGION: us-central1

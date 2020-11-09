@@ -1,0 +1,86 @@
+#!/bin/bash
+set -x
+
+# Read in project-wide environment variables
+python3 makeenv.py config.yml
+eval $(bash parseyaml.sh env.yml)
+
+if gcloud projects list --format flattened $project | grep -Eq "projectId:\s+$GCP_PROJECT"
+then
+    echo Project found
+else
+    echo Creating project
+    gcloud projects create $GCP_PROJECT
+fi
+gcloud config set project $GCP_PROJECT
+echo 'Billing Accounts:'
+gcloud beta billing accounts list --filter open=true | tr -s ' ' | cut -d ' ' -f 2 | tail -n +2
+read -p "Enter a billing account for this project: " billingAccountName
+billingAccountId=$(gcloud beta billing accounts list --filter displayName=$billingAccountName --limit 1 | tail -n +2 | cut -f1 -d' ')
+gcloud beta billing projects link $GCP_PROJECT --billing-account=$billingAccountId
+
+echo 'Enabling cloudfunction and cloudbuild APIs'
+gcloud services enable cloudfunctions.googleapis.com
+gcloud services enable cloudbuild.googleapis.com
+
+rm -f .firebaserc
+#TODO add firebase only if not already added
+# firebase projects:addfirebase $GCP_PROJECT
+firebase use $GCP_PROJECT
+echo "Deploying jobs database"
+echo "Open https://console.firebase.google.com/project/$GCP_PROJECT/firestore and create a firestore database with the default settings"
+read -p "Press enter when finished"
+
+echo "Accept the default paths for firestore.rules and firestore.indexes.json. Do not overwrite the files."
+read -p "Press enter when finished"
+firebase init firestore
+echo "Deploying job output storage"
+echo "Accept the default path for storage.rules"
+firebase init storage
+# firebase deploy
+echo "Deploy initial data to firestore"
+#TODO this is hanging
+# python3 initdb.py
+
+# OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceaccount.com"
+echo "Creating service account $OCQ_SERVICE_ACCOUNT_NAME with editor role"
+gcloud iam service-accounts create "$OCQ_SERVICE_ACCOUNT_NAME" --description "$OCQ_SERVICE_ACCOUNT_DESC" --display-name "$OCQ_SERVICE_ACCOUNT_DISPLAY"
+gcloud projects add-iam-policy-binding $GCP_PROJECT --member "serviceAccount:$OCQ_SERVICE_ACCOUNT_EMAIL" --role 'roles/editor'
+
+echo "Deploying pubsub message queues"
+gcloud pubsub topics create $OCQ_JOB_START_TOPIC
+gcloud pubsub subscriptions create $OCQ_JOB_START_SUB --topic $OCQ_JOB_START_TOPIC --ack-deadline 60
+gcloud pubsub topics create $OCQ_JOB_DONE_TOPIC
+gcloud pubsub subscriptions create $OCQ_JOB_DONE_SUB --topic $OCQ_JOB_DONE_TOPIC --ack-deadline 60
+
+#TODO add region to functions (probably to everything else too)
+echo 'Deploying functions'
+gcloud beta functions deploy $OCQ_INSTANCE_CREATE_FUNC \
+    --source=instance-creation/cloud-functions/ \
+    --runtime=python38 \
+    --entry-point create_instance \
+    --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
+    --memory=256MB \
+    --trigger-event=providers/google.firebase.database/eventTypes/ref.update \
+    --trigger-resource="projects/$GCP_PROJECT/databases/(default)/documents/environment/annotators" \
+    --env-vars-file env.yml
+gcloud functions deploy $OCQ_JOB_START_FUNC \
+    --source cloud-functions/ \
+    --runtime python38 \
+    --entry-point job_start \
+    --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
+    --env-vars-file env.yml \
+    --trigger-topic $OCQ_JOB_START_TOPIC \
+    --max-instances 1
+gcloud functions deploy $OCQ_JOB_DONE_FUNC \
+    --source cloud-functions/ \
+    --runtime python38 \
+    --entry-point job_start \
+    --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
+    --env-vars-file env.yml \
+    --trigger-topic $OCQ_JOB_DONE_TOPIC \
+    --max-instances 1
+
+
+echo 'Deploying app'
+gcloud app deploy app-engine

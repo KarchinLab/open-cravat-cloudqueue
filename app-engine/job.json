@@ -1,0 +1,9 @@
+{
+    "bucket": "oc-webflow",
+    "inputs": [
+        "1/xaa",
+        "1/xab"
+    ],
+    "config": "1/config.yml"
+}
+
