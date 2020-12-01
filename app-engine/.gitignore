@@ -1,3 +1,4 @@
 gcp-key.json
 env
 app.yaml
+static/firebase-config.js

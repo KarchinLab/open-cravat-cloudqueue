@@ -32,6 +32,8 @@ rm -f .firebaserc
 #TODO add firebase only if not already added
 firebase projects:addfirebase $GCP_PROJECT
 firebase use $GCP_PROJECT
+sdkCmd=$(firebase apps:create web ocq | grep 'firebase apps:sdkconfig WEB .*$' -o)
+$sdkCmd > app-engine/static/firebase-config.js
 
 # Authentication
 echo "Open the link below and enable Email/Password authentication. Do not enable Email link authentication"
