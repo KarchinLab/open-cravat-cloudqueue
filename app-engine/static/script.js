@@ -5,10 +5,13 @@ window.addEventListener('load', function () {
 
   // FirebaseUI config.
   var uiConfig = {
-    signInSuccessUrl: '/',
+    signInSuccessUrl: '/submit',
     signInOptions: [
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    ],
+      {
+        provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        requireDisplayName: false
+      }
+    ]
   };
 
   firebase.auth().onAuthStateChanged(function (user) {
@@ -16,9 +19,6 @@ window.addEventListener('load', function () {
       // User is signed in, so display the "sign out" button and login info.
       document.getElementById('sign-out').hidden = false;
       document.getElementById('login-info').hidden = false;
-      document.getElementById('submitjob').hidden = false;
-      document.getElementById('anno-info').hidden = false;
-      document.getElementById('createlist').hidden = false;
       console.log(`Signed in as ${user.displayName} (${user.email})`);
       user.getIdToken().then(function (token) {
         document.cookie = "token=" + token;
@@ -32,9 +32,6 @@ window.addEventListener('load', function () {
       // Update the login state indicators.
       document.getElementById('sign-out').hidden = true;
       document.getElementById('login-info').hidden = true;
-      document.getElementById('submitjob').hidden = true;
-      document.getElementById('anno-info').hidden = true;
-      document.getElementById('createlist').hidden = true;
       // Clear the token cookie.
       document.cookie = "token=";
     }

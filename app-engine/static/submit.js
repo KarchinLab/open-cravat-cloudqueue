@@ -8,7 +8,7 @@ async function main() {
 async function loadAnnotators () {
     const instanceRef = firebase.firestore()
         .collection('environment')
-        .doc('annotators')
+        .doc('annotators');
     const instance = await instanceRef.get();
     const container = document.querySelector('#annotators');
     while (container.firstChild) container.removeChile(container.firstChild)
@@ -85,6 +85,20 @@ function fillJobRow(tr, jobId, job) {
     tr.append($(document.createElement('td'))
         .text(job.annotators.join(','))
     )
+    // Outputs
+    let outputTd = $(document.createElement('td'))
+    if (job.status.code >= 40) {
+        let dbLink = $(document.createElement('a'))
+            .text('Database')
+            .attr('target','_blank')
+        outputTd.append(dbLink);
+        firebase.storage().ref().child(job.output).getDownloadURL().then((url)=>{
+            dbLink.attr('href',url);
+        })
+    } else {
+        outputTd.text('Not yet');
+    }
+    tr.append(outputTd);
     // Delete
     tr.append($(document.createElement('td'))
         .append($(document.createElement('button'))

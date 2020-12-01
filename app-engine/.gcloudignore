@@ -19,3 +19,5 @@ __pycache__/
 /setup.cfg
 cors.json
 env
+
+app-template.yml

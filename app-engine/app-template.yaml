@@ -5,7 +5,7 @@ handlers:
 - url: /.*
   script: auto
 env_variables:
-  GCP_PROJECT: ocq-deploy-repeatable
+  GCP_PROJECT: ocq-dep
   OCQ_SERVICE_ACCOUNT_NAME: ocq-acct
   OCQ_SERVICE_ACCOUNT_DESC: OC cloudqueue account
   OCQ_SERVICE_ACCOUNT_DISPLAY: OCQ
