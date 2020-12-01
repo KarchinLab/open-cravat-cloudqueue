@@ -1,7 +1,3 @@
-# Make sure changes here match those in ../env.yml:env_variables
-
-GCP_PROJECT: ocq-dep
-
 # Run everything under one service account
 OCQ_SERVICE_ACCOUNT_NAME: ocq-acct
 OCQ_SERVICE_ACCOUNT_DESC: OC cloudqueue account
@@ -24,9 +20,6 @@ OCQ_INSTANCE_FAMILY: oc-runner-images
 OCQ_WORKER_LABEL: oc-worker
 # Limit simultaneous running workers. Must be string type.
 OCQ_WORKER_LIMIT: '2'
-
-# Bucket for job input/output
-OCQ_BUCKET: oc-web-ae-testing.appspot.com
 
 # Need for python 3.8
 FUNCTION_REGION: us-central1

@@ -8,8 +8,11 @@ app_path = 'app-engine/app.yaml'
 
 d = yaml.safe_load(open(constants_path))
 conf = yaml.safe_load(open(sys.argv[1]))
-d['GCP_PROJECT'] = conf['project']
-d['FUNCTION_REGION'] = conf['region']
+project = conf['project']
+region = conf['region']
+d['GCP_PROJECT'] = project
+d['FUNCTION_REGION'] = region
+d['OCQ_BUCKET'] = f'{project}.appspot.com'
 
 sacct_name = d['OCQ_SERVICE_ACCOUNT_NAME']
 project = d['GCP_PROJECT']
