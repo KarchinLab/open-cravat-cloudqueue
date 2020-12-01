@@ -61,6 +61,7 @@ OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceac
 echo "Creating service account $OCQ_SERVICE_ACCOUNT_NAME with editor role"
 gcloud iam service-accounts create "$OCQ_SERVICE_ACCOUNT_NAME" --description "$OCQ_SERVICE_ACCOUNT_DESC" --display-name "$OCQ_SERVICE_ACCOUNT_DISPLAY"
 gcloud projects add-iam-policy-binding $GCP_PROJECT --member "serviceAccount:$OCQ_SERVICE_ACCOUNT_EMAIL" --role 'roles/editor'
+gcloud iam service-accounts keys create --iam-account $OCQ_SERVICE_ACCOUNT_EMAIL app-engine/gcp-key.json
 
 # PubSub
 echo "Deploying pubsub message queues"
