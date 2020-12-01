@@ -20,7 +20,6 @@ else:
 config = yaml.safe_load(open('config.yml'))
 users_ref = db.collection('environment').document('authorized-users')
 users_content = {'authorizedUsers':config['users']}
-print(users_content)
 if users_ref.get().exists:
     anno_ref.update(users_content)
 else:
