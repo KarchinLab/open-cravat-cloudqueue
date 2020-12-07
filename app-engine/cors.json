@@ -1,8 +1,0 @@
-[
-    {
-      "origin": ["https://oc-web-portal.appspot.com/"],
-      "method": ["GET","PUT"],
-      "responseHeader": [],
-      "maxAgeSeconds": 3600
-    }
-]
