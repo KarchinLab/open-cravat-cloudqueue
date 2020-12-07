@@ -9,61 +9,80 @@ function loadImageStatus () {
   const instanceRef = firebase.firestore()
       .collection('environment')
       .doc('imageStatus')
-  instanceRef.get().then(function(doc) {
-    if (doc.exists) {
-      const container = document.querySelector('#imageStatus');
-      var para = document.createElement('P');
-      var value = document.createTextNode(doc.data().imageStatus);
-      para.appendChild(value);
-      document.getElementById("imageStatus").appendChild(para);
-    } else {
-      console.log("That has not been created");
-    }
-  });
-
+      .onSnapshot(function(doc) {
+        if (doc.exists) {
+          const container = document.querySelector('#imageStatus');
+          var para = document.createElement('P');
+          var value = document.createTextNode(doc.data().imageStatus);
+          while(container.firstChild){
+            container.removeChild(container.firstChild);
+          }
+          para.appendChild(value);
+          document.getElementById("imageStatus").appendChild(para);
+        } else {
+          console.log("That database entry has not been created");
+        }
+      });
 }
 
-async function loadAnnotators () {
+function loadAnnotators () {
   const instanceRef = firebase.firestore()
       .collection('environment')
       .doc('annotators')
-  const instance = await instanceRef.get();
-  const container = document.querySelector('#annotators');
-  const lister = document.createElement('ul')
-  container.appendChild(lister)
-  for (let annotator of instance.data().annotators) {
-    let li = document.createElement('li');
-    lister.appendChild(li);
-    let value = document.createTextNode(annotator);
-    li.appendChild(value);
-  }
+      .onSnapshot(function(doc) {
+        if (doc.exists) {
+          const container = document.querySelector('#annotators');
+          var lister = document.createElement('ul');
+          while(container.firstChild){
+            container.removeChild(container.firstChild);
+          }
+          container.appendChild(lister);
+          for (let annotator of doc.data().annotators) {
+            let li = document.createElement('li');
+            lister.appendChild(li);
+            let value = document.createTextNode(annotator);
+            li.appendChild(value);
+          }
+        } else {
+          console.log("No annotators configured yet");
+        }
+      });
 }
 
-async function loadApprovedUsers () {
+function loadApprovedUsers () {
   const instanceRef = firebase.firestore()
-      .collection('environment')
-      .doc('authorized-users')
-  const instance = await instanceRef.get();
-  const container = document.querySelector('#authorizedUsers');
-  const lister = document.createElement('ul');
-  container.appendChild(lister);
-  lister.style['list-style-type'] = 'none';
-  for (let user of instance.data().authorizedUsers) {
-    let li = document.createElement('li');
-    lister.appendChild(li);
-    let cb = document.createElement('input')
-    li.appendChild(cb)
-    cb.type = 'checkbox'
-    let cbid = `${user}-cb`;
-    cb.value = user;
-    cb.classList.add('user-cb');
-    cb.id = cbid;
-    let label = document.createElement('label');
-    li.appendChild(label)
-    label.htmlFor = cbid
-    label.innerText = user
-  }
+  .collection('environment')
+  .doc('authorized-users')
+  .onSnapshot(function(doc) {
+    if (doc.exists) {
+      const container = document.querySelector('#authorizedUsers');
+      const lister = document.createElement('ul');
+      while(container.firstChild){
+        container.removeChild(container.firstChild);
+      }
+      container.appendChild(lister);
+      lister.style['list-style-type'] = 'none';
+      for (let user of doc.data().authorizedUsers) {
+        let li = document.createElement('li');
+        lister.appendChild(li);
+        let cb = document.createElement('input')
+        li.appendChild(cb)
+        cb.type = 'checkbox'
+        let cbid = `${user}-cb`;
+        cb.value = user;
+        cb.classList.add('user-cb');
+        cb.id = cbid;
+        let label = document.createElement('label');
+        li.appendChild(label)
+        label.htmlFor = cbid
+        label.innerText = user
+      }
+    } else {
+      console.log("Somehow no users have been configured");
+    }
+  });
 }
+
 
 $(()=>{
   $("#createimage").click(()=>{
@@ -83,6 +102,14 @@ function addNewUser() {
   var userRef = firebase.firestore().collection('environment').doc('authorized-users');
   userRef.update({
     authorizedUsers: firebase.firestore.FieldValue.arrayUnion(newUser)
+  });
+}
+
+function deleteUser() {
+  var userToDel = document.getElementById("selectedUser").value;
+  var userRef = firebase.firestore().collection('environment').doc('authorized-users');
+  userRef.update({
+    authorizedUsers: firebase.firestore.FieldValue.arrayRemove(userToDel)
   });
 }
 
