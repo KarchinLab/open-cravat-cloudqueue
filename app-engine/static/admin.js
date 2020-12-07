@@ -60,14 +60,10 @@ function loadApprovedUsers () {
       while(container.firstChild){
         container.removeChild(container.firstChild);
       }
-      let firstUser = false;
+      let firstUser = true;
       container.appendChild(lister);
       lister.style['list-style-type'] = 'none';
       for (let user of doc.data().authorizedUsers) {
-        if (firstUser === true) {
-          firstUser = false;
-          console.log('Skipped first user');
-        } else {
           let li = document.createElement('li');
           lister.appendChild(li);
           let cb = document.createElement('input')
@@ -81,8 +77,11 @@ function loadApprovedUsers () {
           li.appendChild(label)
           label.htmlFor = cbid
           label.innerText = user
-      }
-    } 
+          if (firstUser === true) {
+            cb.disabled = true;
+            firstUser = false
+          }
+      } 
   }});
 }
 
@@ -109,12 +108,12 @@ function addNewUser() {
 }
 
 function deleteUser() {
-  //var checkedUser = document.querySelector('.user-cb:checked').value;
-  var checkedUser = $('.user-cb:checked').val();
   var userRef = firebase.firestore().collection('environment').doc('authorized-users');
-  userRef.update({
-    authorizedUsers: firebase.firestore.FieldValue.arrayRemove(checkedUser)
-  });
+  $('.user-cb:checked').each(function() {
+    userRef.update({
+      authorizedUsers: firebase.firestore.FieldValue.arrayRemove(this.value)
+    });
+  })
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
