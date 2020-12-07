@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xe
+set -e
 
 # Read in project-wide environment variables
 python3 makeenv.py config.yml
@@ -15,13 +15,22 @@ fi
 gcloud config set project $GCP_PROJECT
 echo 'Billing Accounts:'
 gcloud beta billing accounts list --filter open=true | tr -s ' ' | cut -d ' ' -f 2 | tail -n +2
-read -p "Enter a billing account for this project: " billingAccountName
-billingAccountId=$(gcloud beta billing accounts list --filter displayName=$billingAccountName --limit 1 | tail -n +2 | cut -f1 -d' ')
-gcloud beta billing projects link $GCP_PROJECT --billing-account=$billingAccountId
+read -p "Enter a billing account for this project from the list above: " billingAccountName
+# billingAccountId=$(gcloud beta billing accounts list --filter displayName=$billingAccountName --limit 1 | tail -n +2 | cut -f1 -d' ')
+# gcloud beta billing projects link $GCP_PROJECT --billing-account=$billingAccountId
 
 echo 'Enabling cloudfunction and cloudbuild APIs'
 gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
+
+# Service account
+OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceaccount.com"
+sacctKey='app-engine/gcp-key.json'
+echo "Creating service account $OCQ_SERVICE_ACCOUNT_NAME with editor role"
+# gcloud iam service-accounts create "$OCQ_SERVICE_ACCOUNT_NAME" --description "$OCQ_SERVICE_ACCOUNT_DESC" --display-name "$OCQ_SERVICE_ACCOUNT_DISPLAY"
+# gcloud projects add-iam-policy-binding $GCP_PROJECT --member "serviceAccount:$OCQ_SERVICE_ACCOUNT_EMAIL" --role 'roles/editor'
+gcloud iam service-accounts keys create --iam-account $OCQ_SERVICE_ACCOUNT_EMAIL $sacctKey
+export GOOGLE_APPLICATION_CREDENTIALS="$sacctKey"
 
 # Firebase
 echo "This tool uses Firebase to provide authentication, database management, and cloud storage."
@@ -30,7 +39,7 @@ echo "You will be directed to enable some Firebase services in a browser, and to
 read -p "Press enter to continue"
 rm -f .firebaserc
 #TODO add firebase only if not already added
-firebase projects:addfirebase $GCP_PROJECT
+# firebase projects:addfirebase $GCP_PROJECT
 firebase use $GCP_PROJECT
 sdkCmd=$(firebase apps:create web ocq | grep 'firebase apps:sdkconfig WEB .*$' -o)
 $sdkCmd > app-engine/static/firebase-config.js
@@ -57,13 +66,6 @@ echo "Deploying cloud storage configuration"
 echo "Follow the prompts to accept the default path for storage.rules"
 firebase init storage
 firebase deploy
-
-# Service account
-OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceaccount.com"
-echo "Creating service account $OCQ_SERVICE_ACCOUNT_NAME with editor role"
-gcloud iam service-accounts create "$OCQ_SERVICE_ACCOUNT_NAME" --description "$OCQ_SERVICE_ACCOUNT_DESC" --display-name "$OCQ_SERVICE_ACCOUNT_DISPLAY"
-gcloud projects add-iam-policy-binding $GCP_PROJECT --member "serviceAccount:$OCQ_SERVICE_ACCOUNT_EMAIL" --role 'roles/editor'
-gcloud iam service-accounts keys create --iam-account $OCQ_SERVICE_ACCOUNT_EMAIL app-engine/gcp-key.json
 
 # PubSub
 echo "Deploying pubsub message queues"
@@ -100,7 +102,6 @@ gcloud functions deploy $OCQ_JOB_DONE_FUNC \
     --env-vars-file env.yml \
     --trigger-topic $OCQ_JOB_DONE_TOPIC \
     --max-instances 1
-
 
 echo 'Deploying app'
 gcloud app deploy app-engine
