@@ -60,27 +60,30 @@ function loadApprovedUsers () {
       while(container.firstChild){
         container.removeChild(container.firstChild);
       }
+      let firstUser = false;
       container.appendChild(lister);
       lister.style['list-style-type'] = 'none';
       for (let user of doc.data().authorizedUsers) {
-        let li = document.createElement('li');
-        lister.appendChild(li);
-        let cb = document.createElement('input')
-        li.appendChild(cb)
-        cb.type = 'checkbox'
-        let cbid = `${user}-cb`;
-        cb.value = user;
-        cb.classList.add('user-cb');
-        cb.id = cbid;
-        let label = document.createElement('label');
-        li.appendChild(label)
-        label.htmlFor = cbid
-        label.innerText = user
+        if (firstUser === true) {
+          firstUser = false;
+          console.log('Skipped first user');
+        } else {
+          let li = document.createElement('li');
+          lister.appendChild(li);
+          let cb = document.createElement('input')
+          li.appendChild(cb)
+          cb.type = 'checkbox'
+          let cbid = `${user}-cb`;
+          cb.value = user;
+          cb.classList.add('user-cb');
+          cb.id = cbid;
+          let label = document.createElement('label');
+          li.appendChild(label)
+          label.htmlFor = cbid
+          label.innerText = user
       }
-    } else {
-      console.log("Somehow no users have been configured");
-    }
-  });
+    } 
+  }});
 }
 
 
@@ -106,10 +109,11 @@ function addNewUser() {
 }
 
 function deleteUser() {
-  var userToDel = document.getElementById("selectedUser").value;
+  //var checkedUser = document.querySelector('.user-cb:checked').value;
+  var checkedUser = $('.user-cb:checked').val();
   var userRef = firebase.firestore().collection('environment').doc('authorized-users');
   userRef.update({
-    authorizedUsers: firebase.firestore.FieldValue.arrayRemove(userToDel)
+    authorizedUsers: firebase.firestore.FieldValue.arrayRemove(checkedUser)
   });
 }
 
