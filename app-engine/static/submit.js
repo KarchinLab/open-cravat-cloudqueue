@@ -1,9 +1,37 @@
 async function main() {
     console.log(firebase.auth().currentUser.email);
+    $('#username').text(firebase.auth().currentUser.email);
     document.querySelector('#submit').disabled=null;
     loadAnnotators();
     loadJobs();
 };
+
+// async function loadAnnotators () {
+//     const instanceRef = firebase.firestore()
+//         .collection('environment')
+//         .doc('annotators');
+//     const instance = await instanceRef.get();
+//     const container = document.querySelector('#annotators');
+//     while (container.firstChild) container.removeChile(container.firstChild)
+//     const ol = document.createElement('ol');
+//     container.appendChild(ol);
+//     ol.style['list-style-type'] = 'none';
+//     for (let annotator of instance.data().annotators) {
+//         let li = document.createElement('li');
+//         ol.appendChild(li);
+//         let cb = document.createElement('input');
+//         li.appendChild(cb);
+//         cb.type = 'checkbox';
+//         let cbid = `${annotator}-cb`;
+//         cb.value = annotator;
+//         cb.classList.add('annot-cb');
+//         cb.id = cbid;
+//         let label = document.createElement('label');
+//         li.appendChild(label);
+//         label.htmlFor = cbid;
+//         label.innerText = annotator; 
+//     }
+// }
 
 async function loadAnnotators () {
     const instanceRef = firebase.firestore()
@@ -11,24 +39,29 @@ async function loadAnnotators () {
         .doc('annotators');
     const instance = await instanceRef.get();
     const container = document.querySelector('#annotators');
-    while (container.firstChild) container.removeChile(container.firstChild)
-    const ol = document.createElement('ol');
-    container.appendChild(ol);
-    ol.style['list-style-type'] = 'none';
-    for (let annotator of instance.data().annotators) {
-        let li = document.createElement('li');
-        ol.appendChild(li);
+    while (container.firstChild) container.removeChild(container.firstChild)
+    // const ol = document.createElement('ol');
+    // container.appendChild(ol);
+    // ol.style['list-style-type'] = 'none';
+    let annotators = instance.data().annotators;
+    annotators = annotators.concat(['fake1','fake2','fake3']);
+    for (let annotator of annotators) {
+        let bsCb = document.createElement('div');
+        container.appendChild(bsCb);
+        bsCb.classList.add('form-check');
         let cb = document.createElement('input');
-        li.appendChild(cb);
+        bsCb.appendChild(cb);
         cb.type = 'checkbox';
         let cbid = `${annotator}-cb`;
+        cb.id = cbid;
         cb.value = annotator;
         cb.classList.add('annot-cb');
-        cb.id = cbid;
+        cb.classList.add('form-check-input')
         let label = document.createElement('label');
-        li.appendChild(label);
+        bsCb.appendChild(label);
+        label.classList.add('form-check-label');
         label.htmlFor = cbid;
-        label.innerText = annotator; 
+        label.innerText = annotator;
     }
 }
 
