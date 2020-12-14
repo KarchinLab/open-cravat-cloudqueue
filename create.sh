@@ -58,7 +58,6 @@ echo "Follow the prmpts to accept the default paths for firestore.rules and fire
 read -p "Press enter to continue"
 firebase init firestore
 echo "Deploy initial data to firestore"
-#TODO this is hanging
 python3 initdb.py
 
 # Cloud storage
