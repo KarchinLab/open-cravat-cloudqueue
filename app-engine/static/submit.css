@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap');
+
+body {
+  font-family: 'Fira Sans', sans-serif;
+}
+
+#topgrid {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-areas:
+    'nav nav'
+    'submit jobs';
+  grid-template-columns: 400px auto;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+#nav {
+  grid-area: nav;
+}
+
+#submit-div {
+  grid-area: submit;
+  padding-left: 10px;
+}
+
+#jobs-div {
+  grid-area: jobs;
+  padding-right: 10px;
+}
