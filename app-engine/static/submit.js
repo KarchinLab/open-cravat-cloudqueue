@@ -6,33 +6,6 @@ async function main() {
     loadJobs();
 };
 
-// async function loadAnnotators () {
-//     const instanceRef = firebase.firestore()
-//         .collection('environment')
-//         .doc('annotators');
-//     const instance = await instanceRef.get();
-//     const container = document.querySelector('#annotators');
-//     while (container.firstChild) container.removeChile(container.firstChild)
-//     const ol = document.createElement('ol');
-//     container.appendChild(ol);
-//     ol.style['list-style-type'] = 'none';
-//     for (let annotator of instance.data().annotators) {
-//         let li = document.createElement('li');
-//         ol.appendChild(li);
-//         let cb = document.createElement('input');
-//         li.appendChild(cb);
-//         cb.type = 'checkbox';
-//         let cbid = `${annotator}-cb`;
-//         cb.value = annotator;
-//         cb.classList.add('annot-cb');
-//         cb.id = cbid;
-//         let label = document.createElement('label');
-//         li.appendChild(label);
-//         label.htmlFor = cbid;
-//         label.innerText = annotator; 
-//     }
-// }
-
 async function loadAnnotators () {
     const instanceRef = firebase.firestore()
         .collection('environment')
@@ -40,9 +13,6 @@ async function loadAnnotators () {
     const instance = await instanceRef.get();
     const container = document.querySelector('#annotators');
     while (container.firstChild) container.removeChild(container.firstChild)
-    // const ol = document.createElement('ol');
-    // container.appendChild(ol);
-    // ol.style['list-style-type'] = 'none';
     let annotators = instance.data().annotators;
     annotators = annotators.concat(['fake1','fake2','fake3']);
     for (let annotator of annotators) {
@@ -92,13 +62,9 @@ function addJob(jobId, job) {
 
 function fillJobRow(tr, jobId, job) {
     tr.attr('jobid',jobId)
-    // Job ID
-    tr.append($(document.createElement('td'))
-        .text(jobId)
-    )
     // Init Time
     let initTime = job.initTime;
-    let ts = initTime ? initTime.toDate().toISOString() : '';
+    let ts = initTime ? initTime.toDate().toLocaleString() : '';
     tr.append($(document.createElement('td'))
         .text(ts)
     )
@@ -106,19 +72,7 @@ function fillJobRow(tr, jobId, job) {
     tr.append($(document.createElement('td'))
         .text(job.status.display)
     )
-    // Inputs
-    tr.append($(document.createElement('td'))
-        .text(job.inputNames.join(','))
-    )
-    // Genome
-    tr.append($(document.createElement('td'))
-        .text(job.genome)
-    )
-    // Annotators
-    tr.append($(document.createElement('td'))
-        .text(job.annotators.join(','))
-    )
-    // Outputs
+    // Output
     let outputTd = $(document.createElement('td'))
     if (job.status.code >= 40) {
         let dbLink = $(document.createElement('a'))
@@ -132,11 +86,33 @@ function fillJobRow(tr, jobId, job) {
         outputTd.text('Not yet');
     }
     tr.append(outputTd);
+    // Inputs
+    tr.append($(document.createElement('td'))
+        .text(job.inputNames.join(','))
+    )
+    // Annotators
+    let annotsText = job.annotators.join(', ');
+    tr.append($(document.createElement('td'))
+        .addClass(['text-truncate'])
+        .css('max-width','30ch')
+        .text(annotsText)
+        .attr('title', annotsText)
+    )
+    // Genome
+    tr.append($(document.createElement('td'))
+        .text(job.genome)
+    )
+    // Job ID
+    tr.append($(document.createElement('td'))
+        .text(jobId)
+    )
     // Delete
     tr.append($(document.createElement('td'))
         .append($(document.createElement('button'))
-            .text('X')
+            .attr('type','button')
+            .addClass(['close','btn','btn-sm','btn-outline-danger'])
             .click(deleteJobHandler)
+            .append($(document.createElement('span')).text('X').css('hidden','true'))
         )
     )
 }
