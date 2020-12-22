@@ -82,7 +82,7 @@ gcloud beta functions deploy $OCQ_INSTANCE_CREATE_FUNC \
     --entry-point create_instance \
     --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
     --memory=256MB \
-    --trigger-event=providers/google.firebase.database/eventTypes/ref.update \
+    --trigger-event=providers/cloud.firestore/eventTypes/document.update \
     --trigger-resource="projects/$GCP_PROJECT/databases/(default)/documents/environment/annotators" \
     --env-vars-file env.yml
 gcloud functions deploy $OCQ_JOB_START_FUNC \
