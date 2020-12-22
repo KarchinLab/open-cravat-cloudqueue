@@ -74,7 +74,6 @@ gcloud pubsub topics create $OCQ_JOB_DONE_TOPIC
 gcloud pubsub subscriptions create $OCQ_JOB_DONE_SUB --topic $OCQ_JOB_DONE_TOPIC --ack-deadline 60
 
 # Cloud functions
-#TODO add region to functions (probably to everything else too)
 echo 'Deploying functions'
 gcloud beta functions deploy $OCQ_INSTANCE_CREATE_FUNC \
     --source=instance-creation/cloud-functions/ \
@@ -82,12 +81,14 @@ gcloud beta functions deploy $OCQ_INSTANCE_CREATE_FUNC \
     --entry-point create_instance \
     --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
     --memory=256MB \
+    --region=us-central1 \
     --trigger-event=providers/cloud.firestore/eventTypes/document.update \
     --trigger-resource="projects/$GCP_PROJECT/databases/(default)/documents/environment/annotators" \
     --env-vars-file env.yml
 gcloud functions deploy $OCQ_JOB_START_FUNC \
     --source cloud-functions/ \
     --runtime python38 \
+    --region=us-central1 \
     --entry-point job_start \
     --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
     --env-vars-file env.yml \
@@ -96,6 +97,7 @@ gcloud functions deploy $OCQ_JOB_START_FUNC \
 gcloud functions deploy $OCQ_JOB_DONE_FUNC \
     --source cloud-functions/ \
     --runtime python38 \
+    --region=us-central1 \
     --entry-point job_start \
     --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
     --env-vars-file env.yml \
