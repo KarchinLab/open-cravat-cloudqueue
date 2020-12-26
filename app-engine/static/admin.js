@@ -1,5 +1,6 @@
 async function main() {
   console.log(firebase.auth().currentUser.email);
+  $('#username').text(firebase.auth().currentUser.email);
   loadAnnotators();
   loadApprovedUsers();
   loadImageStatus();
