@@ -9,8 +9,8 @@ body {
   grid-gap: 10px;
   grid-template-areas:
     'nav nav'
-    'image user';
-  grid-template-columns: 400px auto;
+    'image-div user-div';
+  grid-template-columns: auto auto;
   grid-template-rows: auto 1fr;
   height: 100vh;
 }
@@ -20,11 +20,11 @@ body {
 }
 
 #image-div {
-  grid-area: submit;
+  grid-area: image-div;
   padding-left: 10px;
 }
 
 #user-div {
-  grid-area: jobs;
+  grid-area: user-div;
   padding-right: 10px;
 }

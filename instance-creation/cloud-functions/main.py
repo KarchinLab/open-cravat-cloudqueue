@@ -27,7 +27,7 @@ def create_instance(event, context):
     project = os.environ['GCP_PROJECT']
     compute = googleapiclient.discovery.build('compute', 'v1')
     image_check = compute.images().getFromFamily(
-        project='centos.cloud', 
+        project='centos-cloud', 
         family='centos-7',
     ).execute()
     region = os.environ['FUNCTION_REGION']
@@ -36,7 +36,7 @@ def create_instance(event, context):
     source_disk_image = image_check['selfLink']
     machine_type = 'zones/' + evzone + '/machineTypes/n1-standard-1' 
     instance_name = "oc-source-instance"
-    service_acct = os.environ['OCQ_SERVICE_ACCOUNT']
+    service_acct = os.environ['OCQ_SERVICE_ACCOUNT_EMAIL']
     startup = open(os.path.join(os.path.dirname(__file__), 'startup.sh'), 'r').read()
     config = {
         'name': instance_name,
