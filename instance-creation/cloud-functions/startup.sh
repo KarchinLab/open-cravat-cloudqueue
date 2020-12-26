@@ -7,15 +7,19 @@ STAMP=`date +%s`
 
 sleep 60
 
-yum group install -y "Development tools"
+yum groupinstall -y "Development tools"
 
 yum install -y python3 python3-devel
 
-pip3 install --upgrade google-cloud-firestore
+pip3 install --upgrade pip
+
+python3 -m pip install --upgrade setuptools
+
+pip3 install --upgrade firebase-admin
 
 
 python3 - <<'END_SCRIPT'
-from google.cloud import firestore
+from firebase_admin import firestore
 db = firestore.Client()
 doc_ref = db.collection(u'environment').document(u'imageStatus')
 doc_ref.set({u'imageStatus' : "Creating"})
@@ -30,7 +34,7 @@ oc module install -y $ANNOTATORS
 gcloud compute images create oc-runner-updated-$STAMP --force --family oc-runner-images --source-disk oc-source-instance --source-disk-zone $ZONE
 
 python3 - <<'END_SCRIPT'
-from google.cloud import firestore
+from firebase_admin import firestore
 db = firestore.Client()
 doc_ref = db.collection(u'environment').document(u'imageStatus')
 doc_ref.update({u'imageStatus' : "Ready"})
