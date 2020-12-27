@@ -97,6 +97,7 @@ $(()=>{
     })
       .catch((error) => {console.error('Error:', error);
     });
+    $('#annotatms').val('');    
   });
 });
 

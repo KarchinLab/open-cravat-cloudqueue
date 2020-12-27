@@ -62,7 +62,23 @@
             </select>
           {% endif %}
         </form>
-        <button id="createimage" class="btn btn-outline-success mt-3">Create Image</button>
+        <button id="createimage" class="btn btn-outline-success mt-3" data-bs-toggle="modal" data-bs-target="#imageModal">Create Image</button>
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image creation submitted</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Your build request has been submitted. This process can take some time, the image status will update several times during the build.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <br>
       <h4>Current Image Status:</h4>
