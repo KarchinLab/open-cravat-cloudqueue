@@ -4,7 +4,7 @@
 # You may obtain a copy of the License at
 #     http://www.apache.org/licenses/LICENSE-2.0
 import datetime
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for, send_from_directory
 from functools import wraps
 from google.auth.transport import requests
 from google.cloud import storage
@@ -186,6 +186,11 @@ def submit_job():
     job_id = data['jobId']
     enqueue_job(job_id)
     return ('',200)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
