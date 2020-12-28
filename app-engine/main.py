@@ -137,7 +137,7 @@ def admin():
     return render_template('admin.html', annolist=annolist)
 
 @app.route('/show_selected', methods=['POST'])
-@access_control(admin=False)
+@access_control(admin=True)
 def get_anno_selections():
     if request.method == 'POST':
         annotators = request.get_json()
