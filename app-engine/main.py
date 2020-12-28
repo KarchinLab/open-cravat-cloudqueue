@@ -69,7 +69,7 @@ def access_control(admin):
 
 
 def fetch_new_list():
-    url = 'https://files.kylemoad.com/public/cravatstore/manifest.yml'
+    url = 'https://store.opencravat.org/manifest.yml'
     data = requests.get(url)
     out = data.content
     currentvals = yaml.load(out, Loader=yaml.FullLoader)
