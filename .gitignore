@@ -68,3 +68,5 @@ node_modules/
 .firebaserc
 env.yml
 env.sh
+
+*.pyc
