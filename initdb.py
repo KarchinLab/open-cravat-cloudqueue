@@ -11,7 +11,7 @@ else:
     is_ref.create(is_content)
 
 anno_ref = db.collection('environment').document('annotators')
-anno_content = {'annotators' : ""}
+anno_content = {'annotators' : []}
 if anno_ref.get().exists:
     anno_ref.update(anno_content)
 else:
