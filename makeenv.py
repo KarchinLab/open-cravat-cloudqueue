@@ -1,5 +1,6 @@
 import oyaml as yaml
 import sys
+from pathlib import Path
 
 constants_path = 'constants.yml'
 env_path = 'env.yml'
@@ -26,6 +27,8 @@ with open(app_template,'r') as f:
 app_config['env_variables'] = d
 with open(app_path,'w') as wf:
     wf.write(yaml.dump(app_config))
+# Only write this to env.sh
+d['GOOGLE_APPLICATION_CREDENTIALS'] = str(Path('app-engine/gcp-key.json').resolve())
 with open(export_path,'w') as wf:
     for k,v in d.items():
         wf.write(f'export {k}="{v}"\n')
