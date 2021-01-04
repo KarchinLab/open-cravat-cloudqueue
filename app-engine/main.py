@@ -53,11 +53,13 @@ def access_control(admin):
                     authusers = userrecord["authorizedUsers"]
                     adminemail = authusers[0]
                     currentemail = id_data['email']
-                    if (admin == True) and (currentemail == adminemail):
-                        pass
-                    elif (admin == False) and (currentemail in authusers):
-                        pass
-                    else:
+                    is_admin = currentemail == adminemail
+                    kwargs['is_admin'] = is_admin
+                    is_user = currentemail in authusers
+                    kwargs['is_user'] = is_user
+                    if admin and not is_admin:
+                        return redirect('/')
+                    if not(admin) and not is_user:
                         return redirect('/')
                 except ValueError:
                     return redirect('/')
@@ -112,33 +114,18 @@ def root():
 
 @app.route('/submit')
 @access_control(admin=False)
-def index():
-    id_token = request.cookies.get("token")
-    try:
-        google.oauth2.id_token.verify_firebase_token(
-            id_token, firebase_request_adapter)
-    except ValueError:
-        return redirect('/')
-    return render_template('submit.html')
+def submit(is_admin=False, **kwargs):
+    return render_template('submit.html', is_user=True, is_admin=is_admin)
 
 @app.route('/admin')
 @access_control(admin=True)
-def admin():
-    annolist = None
-    id_token = request.cookies.get("token")
-    try:
-        google.oauth2.id_token.verify_firebase_token(
-            id_token, firebase_request_adapter)
-        annolist = fetch_new_list()
-    except ValueError:
-        #return redirect('/')
-        return render_template('admin.html', annolist=annolist)
-
-    return render_template('admin.html', annolist=annolist)
+def admin(**kwargs):
+    annolist = fetch_new_list()
+    return render_template('admin.html', is_user=True, is_admin=True, annolist=annolist)
 
 @app.route('/show_selected', methods=['POST'])
 @access_control(admin=True)
-def get_anno_selections():
+def get_anno_selections(**kwargs):
     if request.method == 'POST':
         annotators = request.get_json()
         annotrim = annotators['msoutput']
@@ -150,7 +137,7 @@ def new_job_id():
 
 @app.route('/init-job',methods=['POST'])
 @access_control(admin=False)
-def init_job():
+def init_job(**kwargs):
     input_files = request.json['inputFiles']
     job_id = ''.join(random.choice(string.ascii_lowercase) for _ in range(10))
     status_obj = bucket.blob(f'jobs/{job_id}/status.json')
@@ -181,7 +168,7 @@ def enqueue_job(job_id):
 
 @app.route('/submit-job',methods=['POST'])
 @access_control(admin=False)
-def submit_job():
+def submit_job(**kwargs):
     data = request.json
     job_id = data['jobId']
     enqueue_job(job_id)

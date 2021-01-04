@@ -9,17 +9,23 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if is_user %}
             <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/submit">Submit</a>
             </li>
+            {% endif %}
+            {% if is_admin %}
             <li class="nav-item">
             <a class="nav-link" href="/admin">Admin</a>
             </li>
+            {% endif %}
         </ul>
+        {% if is_user %}
         <span id="username" class="navbar-text" style="margin-right:1ch;"></span>
         <form class="d-flex">
             <button id="logout" class="btn btn-outline-primary" onClick="firebase.auth().signOut();">Sign Out</button>
         </form>
+        {% endif %}
         </div>
     </div>
 </div>

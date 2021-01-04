@@ -14,7 +14,6 @@ async function loadAnnotators () {
     const container = document.querySelector('#annotators');
     while (container.firstChild) container.removeChild(container.firstChild)
     let annotators = instance.data().annotators;
-    annotators = annotators.concat(['fake1','fake2','fake3']);
     for (let annotator of annotators) {
         let bsCb = document.createElement('div');
         container.appendChild(bsCb);
@@ -186,6 +185,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         main();
     } else {
-        window.location.href = '/'
+        window.location.href = '/';
     }
 });
