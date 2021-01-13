@@ -16,6 +16,7 @@ d['GCP_PROJECT'] = project
 d['GOOGLE_CLOUD_PROJECT'] = project
 d['FUNCTION_REGION'] = region
 d['OCQ_BUCKET'] = f'{project}.appspot.com'
+d['OCQ_ADMIN_EMAIL'] = conf['users'][0]
 
 sacct_name = d['OCQ_SERVICE_ACCOUNT_NAME']
 project = d['GCP_PROJECT']
