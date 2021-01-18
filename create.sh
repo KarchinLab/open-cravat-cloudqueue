@@ -5,28 +5,68 @@ set -e
 python3 makeenv.py config.yml
 eval $(bash parseyaml.sh env.yml)
 
+# Create project if it does not exist
+echo "Checking for project $GCP_PROJECT"
 if gcloud projects list --format flattened $project | grep -Eq "projectId:\s+$GCP_PROJECT"
 then
-    echo Project found
+    echo "Project found"
 else
-    echo Creating project
+    echo "Creating new project $GCP_PROJECT"
     gcloud projects create $GCP_PROJECT
 fi
-gcloud config set project $GCP_PROJECT
-if $(gcloud beta billing projects describe $GCP_PROJECT | grep 'billingEnabled: false' -q); 
+gcloud config set project $GCP_PROJECT > /dev/null 2>&1
+
+echo 'Checking for billing account'
+if $(gcloud beta billing projects describe $GCP_PROJECT | grep 'billingEnabled: true' -q); 
 then
-    echo 'Billing account required'
-    echo 'Billing Accounts:'
-    gcloud beta billing accounts list --filter open=true | \
-        tr -s ' ' | \
-        cut -d ' ' -f 2 | \
-        tail -n +2 | \
-        sed 's/^/    /' -
-    read -p 'Enter a billing account for this project from the list above: ' billingAccountName
-    billingAccountId=$(gcloud beta billing accounts list --filter displayName=$billingAccountName --limit 1 | tail -n +2 | cut -f1 -d' ')
-    gcloud beta billing projects link $GCP_PROJECT --billing-account=$billingAccountId
+    echo "Billing account found"
 else
-    echo 'Billing already enabled'
+    echo 'Billing account required'
+    declare -A accountNames
+    acctNum=1
+    firstIter=true
+    while read line
+    do
+        if [[ $firstIter == true ]]
+        then
+            echo 'Available billing accounts'
+            firstIter=false
+        fi
+        displayPattern='displayName:\s+(.*)'
+        namePattern='name:\s+(.*)'
+        if [[ $line =~ '---' ]]
+        then
+            displayName=
+            name=
+            assigned=false
+        elif [[ $line =~ $displayPattern ]]
+        then
+            displayName=${BASH_REMATCH[1]}
+        elif [[ $line =~ $namePattern ]]
+        then
+            name=${BASH_REMATCH[1]}
+        fi
+        if [[ $assigned != true && -n $displayName && -n $name ]]
+        then
+            echo "    [$acctNum]    $displayName"
+            accountNames[$acctNum]=$name
+            assigned=true
+            acctNum=$((acctNum+1))
+        fi        
+    done <<< $(gcloud beta billing accounts list --filter open=true --format flattened)
+    while true
+    do
+        read -p "Account number: " selAcctNum
+        billingAccountId=${accountNames[$selAcctNum]}
+        if [[ -n $billingAccountId ]]
+        then
+            break
+        else
+            echo "Invalid account number: $selAcctNum"
+        fi
+    done
+    echo "Linking billing account to project"
+    gcloud beta billing projects link $GCP_PROJECT --billing-account=$billingAccountId
 fi
 
 echo 'Enabling cloudfunction and cloudbuild APIs'
