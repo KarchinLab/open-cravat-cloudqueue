@@ -62,7 +62,7 @@ else
         then
             break
         else
-            echo "Invalid account number: $selAcctNum"
+            echo "Invalid"
         fi
     done
     echo "Linking billing account to project"
