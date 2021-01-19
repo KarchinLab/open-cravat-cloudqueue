@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-#Oyaml required for early step
+#Oyaml required for early step and firestore needed for db manipulation
 pip3 install oyaml
+pip3 install google-cloud-firestore
 
 # Read in project-wide environment variables
 python3 makeenv.py config.yml
