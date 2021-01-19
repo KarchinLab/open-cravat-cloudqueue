@@ -2,8 +2,15 @@
 set -e
 
 #Oyaml required for early step and firestore needed for db manipulation
-pip3 install oyaml
-pip3 install google-cloud-firestore
+read -p "We need to install a couple of pip packages (oyaml, and google-cloud-firestore) to make this deployment work. Are you ok with this change to your environment? (Please enter 'y' to confirm)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    pip3 install oyaml google-cloud-firestore
+else
+    echo "Please consider using a python virtual environment if you can't modify your system python"
+fi
+
 
 # Read in project-wide environment variables
 python3 makeenv.py config.yml
