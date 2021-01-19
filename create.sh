@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+#Oyaml required for early step
+pip3 install oyaml
+
 # Read in project-wide environment variables
 python3 makeenv.py config.yml
 eval $(bash parseyaml.sh env.yml)
