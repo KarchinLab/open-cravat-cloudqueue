@@ -76,6 +76,9 @@ echo 'Enabling cloudfunction and cloudbuild APIs'
 gcloud services enable cloudfunctions.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
 
+echo 'Enabling the Firebase API'
+gcloud services enable firebase.googleapis.com
+
 # Service account
 OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceaccount.com"
 sacctKey='app-engine/gcp-key.json'
