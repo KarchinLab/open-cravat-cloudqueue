@@ -18,7 +18,7 @@ eval $(bash parseyaml.sh env.yml)
 
 # Create project if it does not exist
 echo "Checking for project $GCP_PROJECT"
-if gcloud projects list --format flattened $project | grep -Eq "projectId:\s+$GCP_PROJECT"
+if gcloud projects list --format flattened | grep -Eq "projectId:\s+$GCP_PROJECT"
 then
     echo "Project found"
 else
@@ -81,8 +81,7 @@ else
 fi
 
 echo 'Enabling cloudfunction and cloudbuild APIs'
-gcloud services enable cloudfunctions.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
+gcloud services enable cloudfunctions.googleapis.com cloudbuild.googleapis.com compute.googleapis.com
 
 echo 'Enabling the Firebase API'
 gcloud services enable firebase.googleapis.com
