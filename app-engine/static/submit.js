@@ -1,9 +1,11 @@
 async function main() {
     console.log(firebase.auth().currentUser.email);
     $('#username').text(firebase.auth().currentUser.email);
-    document.querySelector('#submit').disabled=null;
     loadAnnotators();
     loadJobs();
+    submitBtn = document.querySelector('#submit');
+    submitBtn.disabled=null;
+    submitBtn.addEventListener('click',()=>{submit()})
 };
 
 async function loadAnnotators () {

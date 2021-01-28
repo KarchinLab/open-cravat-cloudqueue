@@ -9,20 +9,18 @@
     <div id="topgrid">
         {% include 'navbar.html' %}
         <div id="submit-div">
-          <form>
-            <label for="inputfile" class="form-label">Input file</label>
-            <input type="file" id="inputfile" class="form-control mb-3">
-            <div class="input-group mb-3">
-              <span class="input-group-text">Genome</span>
-              <select id="genome" class="form-select">
-                <option value="hg38">hg38</option>
-                <option value="hg19">hg19</option>
-              </select>
-            </div>
-            <label class="form-label">Annotators</label>
-            <div id="annotators"></div>
-            <button id="submit" onClick="submit();" disabled class="btn btn-outline-success mt-3">Submit</button>
-          </form>
+          <label for="inputfile" class="form-label">Input file</label>
+          <input type="file" id="inputfile" class="form-control mb-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text">Genome</span>
+            <select id="genome" class="form-select">
+              <option value="hg38">hg38</option>
+              <option value="hg19">hg19</option>
+            </select>
+          </div>
+          <label class="form-label">Annotators</label>
+          <div id="annotators"></div>
+          <button id="submit" disabled class="btn btn-outline-success mt-3">Submit</button>
         </div>
         <div id="jobs-div">
           <table id="jobstable" class="table table-striped table-sm">
