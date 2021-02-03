@@ -29,12 +29,19 @@ def spawn_from_subscription():
     sub_name = os.environ['OCQ_JOB_START_SUB']
     subscription_path = subscriber.subscription_path(evproject, sub_name)
     print("Subscription:" + subscription_path)
-    response = subscriber.pull(subscription_path, max_messages=1)
+    response = subscriber.pull({
+        'subscription':subscription_path,
+        'max_messages':1,
+    })
     if not response.received_messages:
         print('No jobs to launch')
         return
     msg = response.received_messages[0]
-    subscriber.modify_ack_deadline(subscription_path, [msg.ack_id], 60)
+    subscriber.modify_ack_deadline(request={
+        'subscription':subscription_path,
+        'ack_ids': [msg.ack_id],
+        'ack_deadline_seconds':60
+    })
     ack_id = msg.ack_id
     job_id = msg.message.data.decode('utf8')
     print("AckID:" + str(ack_id))
@@ -72,9 +79,8 @@ def spawn_from_subscription():
     source_disk_image = image_check['selfLink']
     machine_type = 'zones/' + evzone + '/machineTypes/n1-standard-1' 
     instance_name = "oc-compute-instance-" + job_id.lower()
-    service_acct = os.environ['OCQ_SERVICE_ACCOUNT']
+    service_acct = os.environ['OCQ_SERVICE_ACCOUNT_EMAIL']
     startup = open(os.path.join(os.path.dirname(__file__), 'startup.sh'), 'r').read()
-    done_func = os.environ['OCQ_JOB_DONE_FUNC']
     done_topic = os.environ['OCQ_JOB_DONE_TOPIC']
     worker_label = os.environ['OCQ_WORKER_LABEL']
     config = {
@@ -196,13 +202,17 @@ def job_done(event, context):
     sub_name = os.environ['OCQ_JOB_DONE_SUB']
     subscription_path = subscriber.subscription_path(evproject, sub_name)
     print("Subscription:" + subscription_path)
-    response = subscriber.pull(subscription_path, max_messages=1)
+    response = subscriber.pull({
+        'subscription':subscription_path,
+        'max_messages':1,
+    })
     if not response.received_messages:
         print('No message to pull')
         return
     msg = response.received_messages[0]
     job_id = msg.message.data.decode('utf8')
     job_doc = db.collection('jobs').document(job_id)
+    print(job_id, job_doc)
     job_doc.update({'status':{'code':40,'display':'Done'}})
     subscriber.acknowledge(subscription_path, [msg.ack_id])
     time.sleep(10)
