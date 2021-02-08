@@ -214,7 +214,10 @@ def job_done(event, context):
     job_doc = db.collection('jobs').document(job_id)
     print(job_id, job_doc)
     job_doc.update({'status':{'code':40,'display':'Done'}})
-    subscriber.acknowledge(subscription_path, [msg.ack_id])
+    subscriber.acknowledge(request={
+        "subscription": subscription_path,
+        "ack_ids": [msg.ack_id],
+    })
     time.sleep(10)
     if worker_space_available():
         return spawn_from_subscription()

@@ -1,4 +1,5 @@
 #!/bin/bash
+
 INPUT=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/ocinput -H "Metadata-Flavor: Google")
 CONFIG=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/occonfig -H "Metadata-Flavor: Google")
 BUCKET=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/bucket -H "Metadata-Flavor: Google")
@@ -13,18 +14,17 @@ JOB_ID=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attrib
 
 gcloud pubsub subscriptions ack $SUBSCRIPTION --ack-ids=$ACK_ID
 
-
 STAMP=`date +%s`
 
-cd /tmp
+cd /tmp/oc-job
 
 gsutil cp $INPUT .
 gsutil cp $CONFIG .
-cravat /tmp/$FILENAME -c /tmp/$CONFIGFILENAME 2>&1 | tee oc-cfrun-$STAMP-commandout.txt
-gsutil cp $FILENAME.sqlite $BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
-gsutil cp $FILENAME.log $BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
-gsutil cp $FILENAME.err $BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
-gsutil cp oc-cfrun-$STAMP-commandout.txt $BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
-gsutil cp /var/log/messages $BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
+oc run /tmp/$FILENAME -c /tmp/$CONFIGFILENAME 2>&1 | tee oc-cfrun-$STAMP-commandout.txt
+gsutil cp $FILENAME.sqlite gs://$BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
+gsutil cp $FILENAME.log gs://$BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
+gsutil cp $FILENAME.err gs://$BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
+gsutil cp oc-cfrun-$STAMP-commandout.txt gs://$BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
+gsutil cp /var/log/messages gs://$BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/
 gcloud pubsub topics publish $DONETOPIC --message $JOB_ID
 gcloud compute instances delete $(hostname) --quiet --zone=$ZONE

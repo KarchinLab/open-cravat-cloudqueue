@@ -182,7 +182,7 @@ gcloud functions deploy $OCQ_JOB_START_FUNC \
 gcloud functions deploy $OCQ_JOB_DONE_FUNC \
     --source cloud-functions/ \
     --runtime python38 \
-    --entry-point job_start \
+    --entry-point job_done \
     --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
     --env-vars-file env.yml \
     --trigger-topic $OCQ_JOB_DONE_TOPIC \
