@@ -210,10 +210,18 @@ def job_done(event, context):
         print('No message to pull')
         return
     msg = response.received_messages[0]
-    job_id = msg.message.data.decode('utf8')
+    print(msg.message.data.decode('utf8'))
+    msgd = json.loads(msg.message.data.decode('utf8'))
+    job_id = msgd['jobId']
+    db_path = msgd['dbPath']
     job_doc = db.collection('jobs').document(job_id)
-    print(job_id, job_doc)
-    job_doc.update({'status':{'code':40,'display':'Done'}})
+    job_doc.update({
+        'status':{
+            'code':40,
+            'display':'Done'
+        },
+        'output':db_path,
+    })
     subscriber.acknowledge(request={
         "subscription": subscription_path,
         "ack_ids": [msg.ack_id],
