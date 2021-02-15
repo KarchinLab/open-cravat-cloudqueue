@@ -77,7 +77,7 @@ def spawn_from_subscription():
     zone = 'a'
     evzone = f'{region}-{zone}'
     source_disk_image = image_check['selfLink']
-    machine_type = 'zones/' + evzone + '/machineTypes/n1-standard-1' 
+    machine_type = 'zones/' + evzone + '/machineTypes/n1-highcpu-8' 
     instance_name = "oc-compute-instance-" + job_id.lower()
     service_acct = os.environ['OCQ_SERVICE_ACCOUNT_EMAIL']
     startup = open(os.path.join(os.path.dirname(__file__), 'startup.sh'), 'r').read()
