@@ -90,9 +90,9 @@ gcloud services enable firebase.googleapis.com
 OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceaccount.com"
 sacctKey='app-engine/gcp-key.json'
 echo "Creating service account $OCQ_SERVICE_ACCOUNT_NAME with editor role"
-# gcloud iam service-accounts create "$OCQ_SERVICE_ACCOUNT_NAME" --description "$OCQ_SERVICE_ACCOUNT_DESC" --display-name "$OCQ_SERVICE_ACCOUNT_DISPLAY"
-# gcloud projects add-iam-policy-binding $GCP_PROJECT --member "serviceAccount:$OCQ_SERVICE_ACCOUNT_EMAIL" --role 'roles/editor'
-# gcloud iam service-accounts keys create --iam-account $OCQ_SERVICE_ACCOUNT_EMAIL $sacctKey
+gcloud iam service-accounts create "$OCQ_SERVICE_ACCOUNT_NAME" --description "$OCQ_SERVICE_ACCOUNT_DESC" --display-name "$OCQ_SERVICE_ACCOUNT_DISPLAY"
+gcloud projects add-iam-policy-binding $GCP_PROJECT --member "serviceAccount:$OCQ_SERVICE_ACCOUNT_EMAIL" --role 'roles/editor'
+gcloud iam service-accounts keys create --iam-account $OCQ_SERVICE_ACCOUNT_EMAIL $sacctKey
 export GOOGLE_APPLICATION_CREDENTIALS="$sacctKey"
 
 # Firebase
@@ -107,7 +107,7 @@ EOF
 read -p "Press enter to continue"
 rm -f .firebaserc
 #TODO add firebase only if not already added
-# firebase projects:addfirebase $GCP_PROJECT
+firebase projects:addfirebase $GCP_PROJECT
 firebase use $GCP_PROJECT
 sdkCmd=$(firebase apps:create web ocq | grep 'firebase apps:sdkconfig WEB .*$' -o)
 $sdkCmd > app-engine/static/firebase-config.js
