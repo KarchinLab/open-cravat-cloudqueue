@@ -17,6 +17,13 @@ if anno_ref.get().exists:
 else:
     anno_ref.create(anno_content)
 
+is_ref = db.collection('environment').document('imageTrigger')
+is_content = {'imageTrigger' : "00000000000"}
+if is_ref.get().exists:
+    is_ref.update(is_content)
+else:
+    is_ref.create(is_content)
+
 config = yaml.safe_load(open('config.yml'))
 users_ref = db.collection('environment').document('authorized-users')
 users_content = {'authorizedUsers':config['users']}

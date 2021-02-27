@@ -13,6 +13,7 @@ OCQ_JOB_DONE_TOPIC: oc-job-done
 OCQ_JOB_DONE_SUB: oc-job-done-sub
 OCQ_JOB_DONE_FUNC: oc-job-done-func
 OCQ_INSTANCE_CREATE_FUNC: oc-instance-create
+OCQ_IMAGE_CREATE_FUNC: oc-image-create
 
 # Family that worker instances are in
 OCQ_INSTANCE_FAMILY: oc-runner-images
