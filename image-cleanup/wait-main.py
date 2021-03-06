@@ -4,6 +4,12 @@ from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 from google.cloud import firestore
 
+def shut_instance(compute, project, zone, instance_name):
+    return compute.instances().stop(
+        project=project,
+        zone=zone,
+        instance=instance_name).execute()
+
 def delete_instance(compute, project, zone, instance_name):
     return compute.instances().delete(
         project=project,
@@ -45,6 +51,21 @@ def wait_for_operation(compute, project, zone, operation):
 
         time.sleep(1)
 
+def wait_for_global_operation(compute, project, operation):
+    print('Waiting for operation to finish...')
+    while True:
+        result = compute.globalOperations().get(
+            project=project,            
+            operation=operation).execute()
+
+        if result['status'] == 'DONE':
+            print("done.")
+            if 'error' in result:
+                raise Exception(result['error'])
+            return result
+
+        time.sleep(1)
+
 def main(event, context, wait=True):
     credentials = GoogleCredentials.get_application_default()
     compute = discovery.build('compute', 'v1', credentials=credentials)
@@ -55,8 +76,11 @@ def main(event, context, wait=True):
     instance_name = 'oc-source-instance'
     time.sleep(30)
 
+    operation = shut_instance(compute, project, zone, instance_name)
+    wait_for_operation(compute,project,zone,operation['name'])
+
     operation = create_image(compute, project, zone, instance_name)
-    wait_for_operation(compute, project, zone, operation['name'])
+    wait_for_global_operation(compute, project, operation['name'])
 
     operation = delete_instance(compute, project, zone, instance_name)
     wait_for_operation(compute, project, zone, operation['name'])

@@ -30,14 +30,3 @@ pip3 install --upgrade open-cravat
 oc module install-base
 
 oc module install -y $ANNOTATORS
-
-gcloud compute images create oc-runner-updated-$STAMP --force --family oc-runner-images --source-disk oc-source-instance --source-disk-zone $ZONE
-
-python3 - <<'END_SCRIPT'
-from firebase_admin import firestore
-db = firestore.Client()
-doc_ref = db.collection(u'environment').document(u'imageStatus')
-doc_ref.update({u'imageStatus' : "Ready"})
-END_SCRIPT
-
-gcloud compute instances delete $(hostname) --quiet --zone=$ZONE
