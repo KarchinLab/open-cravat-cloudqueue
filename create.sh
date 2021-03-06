@@ -177,6 +177,7 @@ gcloud beta functions deploy $OCQ_IMAGE_CREATE_FUNC \
     --entry-point main \
     --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
     --memory=256MB \
+    --timeout=500s \
     --trigger-event=providers/cloud.firestore/eventTypes/document.write \
     --trigger-resource="projects/$GCP_PROJECT/databases/(default)/documents/environment/imageTrigger" \
     --env-vars-file env.yml
