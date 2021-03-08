@@ -1,6 +1,6 @@
 project: ocq-dep
 region: us-central1
 users:
-- kyle.moad@gmail.com
-- kyle.moad2@gmail.com
-- hynesgra@colorado.edu
+- user1@gmail.com
+- user2@gmail.com
+- user3@someemail.com

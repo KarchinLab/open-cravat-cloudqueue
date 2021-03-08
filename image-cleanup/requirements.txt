@@ -1,0 +1,6 @@
+# Function dependencies, for example:
+# package>=version
+google-cloud-firestore
+google-api-python-client
+oauth2client==2.2.0
+google-cloud-error-reporting
