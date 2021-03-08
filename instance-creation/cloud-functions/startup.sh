@@ -30,3 +30,12 @@ pip3 install --upgrade open-cravat
 oc module install-base
 
 oc module install -y $ANNOTATORS
+
+STAMP=$STAMP python3 - <<'END_SCRIPT'
+from firebase_admin import firestore
+import os
+stamp = os.environ['STAMP']
+db = firestore.Client()
+doc_ref = db.collection(u'environment').document(u'imageTrigger')
+doc_ref.update({u'imageTrigger' : stamp})
+END_SCRIPT
