@@ -173,6 +173,18 @@ function modulePanel(moduleName) {
   panel.css('display','');
 }
 
+$(document).on('keyup',e=>{
+  if (e.code === 'Escape' ) {
+    hideModulePanel();
+  }
+})
+
+$(document).on('click',e=>{
+  if ($(e.target).closest($('#module-panel')).length === 0 ) {
+    hideModulePanel();
+  }
+})
+
 function hideModulePanel() {
   $('#module-panel').css('display','none');
 }
