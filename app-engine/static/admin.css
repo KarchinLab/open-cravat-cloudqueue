@@ -28,3 +28,54 @@ body {
   grid-area: user-div;
   padding-right: 10px;
 }
+
+#module-panel {
+  position: fixed;
+  width: 80%;
+  height: 80%;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border: 1px solid black;
+  box-shadow: 0px 0px 10px;
+  background-color: white;
+  margin: auto;
+  display: grid;
+  grid-template-areas: 
+    'title title close'
+    'description details details'
+  ;
+  grid-template-columns: 3fr 1fr auto;
+  grid-template-rows: auto 1fr;
+  grid-row-gap: 1em;
+}
+
+#module-panel-title {
+  grid-area: title;
+  font-size: 3em;
+  text-align: center;
+}
+
+#module-panel-close {
+  grid-area: close;
+}
+
+#module-panel-description {
+  grid-area: description;
+  overflow-y: scroll;
+  padding: 0 1em 0 1em;
+}
+
+#module-panel-details {
+  grid-area: details;
+  padding: 0 1em 0 1em;
+}
+
+.module-panel-detail-header {
+  font-weight: bold;
+}
+.module-panel-detail-row {
+  margin-bottom: 1em;
+}

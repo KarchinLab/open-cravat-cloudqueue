@@ -3,9 +3,20 @@
   <head>
     {% include 'head-defaults.html' %}
     <script defer src="static/admin.js"></script>
+    <script defer src="static/libraries/showdown-1.9.1.min.js"></script>
     <link href="static/admin.css" rel="stylesheet">
   </head>
   <body>
+  <div id='module-panel' style='display:none;'>
+    <div id='module-panel-title'>Module</div>
+    <div id='module-panel-close'>
+      <button onclick='hideModulePanel()' class='close btn btn-lrg btn-outline-danger'>
+        <span>X</span>
+      </button>
+    </div>
+    <div id='module-panel-description'></div>
+    <div id='module-panel-details'></div>
+  </div>
   <div id="topgrid">
     {% include 'navbar.html' %}
     <div id="image-div">

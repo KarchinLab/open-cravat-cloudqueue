@@ -1,7 +1,10 @@
+var manifest=null;
+
 async function main() {
   console.log(firebase.auth().currentUser.email);
   $('#username').text(firebase.auth().currentUser.email);
   loadAnnotators();
+  loadManifest();
   loadApprovedUsers();
   loadImageStatus();
 };
@@ -125,3 +128,94 @@ firebase.auth().onAuthStateChanged(function(user) {
         window.location.href = '/'
     }
 });
+
+async function loadManifest() {
+  const response = await fetch('/manifest');
+  manifest = await response.json();
+}
+
+function modulePanel(moduleName) {
+  if (manifest === null || typeof manifest !== 'object'){
+    return;
+  } else if (! moduleName in manifest) {
+    return;
+  }
+  const minfo = manifest[moduleName];
+  const panel = $('#module-panel');
+  $('#module-panel-title').text(minfo.title);
+  const detailSection = $('#module-panel-details');
+  detailSection.empty();
+  detailSection.append($(document.createElement('div'))
+    .text(minfo.description)
+    .addClass('module-panel-detail-row')
+    );
+  const detailRow = (header, content) => {
+    const div = $(document.createElement('div'))
+      .addClass('module-panel-detail-row');
+    div.append($(document.createElement('span'))
+      .text(header+': ')
+      .addClass('module-panel-detail-header')
+      );
+    div.append($(document.createElement('span'))
+      .text(content)
+      .addClass('module-panel-detail-content')
+      );
+    return div;
+  }
+  detailSection.append(detailRow('Version',minfo['latest_version']));
+  detailSection.append(detailRow('Source version',minfo.data_versions[minfo['latest_version']]));
+  detailSection.append(detailRow('Website',minfo.developer.website));
+  detailSection.append(detailRow('Citation',minfo.developer.citation));
+  detailSection.append(detailRow('Size',humanBytes(minfo.size)));
+
+  showMD(moduleName, minfo.latest_version);
+
+  panel.css('display','');
+}
+
+function hideModulePanel() {
+  $('#module-panel').css('display','none');
+}
+
+async function showMD(moduleName, version) {
+  const url = new URL('/markdown', window.location.href);
+  url.search = new URLSearchParams({'module':moduleName,'version':version}).toString();
+  const response = await fetch(url);
+  const mdText = await response.text();
+  let mdConverter = new showdown.Converter({tables:true,openLinksInNewWindow:true});
+  let mdHtmlRaw = mdConverter.makeHtml(mdText);
+  mdHtmlRaw = mdHtmlRaw.replace(/http:/g, 'https:');
+  var mdElements = $(mdHtmlRaw);
+  const storeUrl = new URL('https://store.opencravat.org');
+  for (let img of mdElements.children('img')) {
+      let curUrl = new URL(img.src);
+      img.src = new URL(`/modules/${moduleName}/${version}/${curUrl.pathname.slice(1)}`, storeUrl).toString();
+      img.style.display = 'block';
+      img.style.margin = 'auto';
+      img.style['max-width'] = '100%';
+  }
+  const description = $('#module-panel-description');
+  description.empty();
+  description.append(mdElements);
+}
+
+function humanBytes (size) {
+  size = parseInt(size);
+  if (size < 1024) {
+      size = size + ' bytes';
+  } else {
+      size = size / 1024;
+      if (size < 1024) {
+          size = size.toFixed(0) + ' KB';
+      } else {
+          size = size / 1024;
+          if (size < 1024) {
+              size = size.toFixed(0) + ' MB';
+          } else {
+              size = size / 1024;
+              size = size.toFixed(0) + ' GB';
+          }
+      }
+  }
+  return size;
+}

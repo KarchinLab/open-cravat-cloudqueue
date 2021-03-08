@@ -88,6 +88,23 @@ def fetch_new_list():
 
     return annolist
 
+@app.route('/manifest')
+def manifest():
+    url = 'https://store.opencravat.org/manifest.yml'
+    data = requests.get(url)
+    out = data.content
+    currentvals = yaml.load(out, Loader=yaml.FullLoader)
+    return currentvals
+
+@app.route('/markdown')
+def markdown():
+    mname = request.args.get('module')
+    version = request.args.get('version')
+    url = f'https://store.opencravat.org/modules/{mname}/{version}/{mname}.md'
+    r = requests.get(url)
+    r.raise_for_status()
+    return r.text
+
 def create_db_anno_list(newannolist):
     newlist = newannolist
     doc_ref = db.collection(u'environment').document(u'annotators')
