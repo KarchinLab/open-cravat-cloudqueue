@@ -174,7 +174,7 @@ function modulePanel(moduleName) {
 }
 
 $(document).on('keyup',e=>{
-  if (e.code === 'Escape' ) {
+  if (e.key === 'Escape' ) {
     hideModulePanel();
   }
 })
