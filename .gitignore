@@ -70,3 +70,6 @@ env.yml
 env.sh
 
 *.pyc
+
+# Visual Studio Code files
+.vscode

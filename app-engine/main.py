@@ -21,6 +21,7 @@ import random
 import string
 import time
 import os
+import datetime as dt
 
 project_id = os.environ['GOOGLE_CLOUD_PROJECT']
 topic_name = os.environ['OCQ_JOB_START_TOPIC']
@@ -71,14 +72,20 @@ def access_control(admin):
 
 
 def fetch_new_list():
-    url = 'https://store.opencravat.org/manifest.yml'
-    data = requests.get(url)
-    out = data.content
-    currentvals = yaml.load(out, Loader=yaml.FullLoader)
+    mani_ref = db.collection('environment').document('manifest')
+    st = time.time()
+    mani_doc = mani_ref.get()
+    if mani_doc.exists and dt.datetime.now(dt.timezone.utc) - mani_doc.update_time < dt.timedelta(hours=1):
+        manifest = mani_doc.to_dict()
+    else:
+        url = 'https://store.opencravat.org/manifest.yml'
+        data = requests.get(url)
+        out = data.content
+        manifest = yaml.load(out, Loader=yaml.FullLoader)
+        mani_ref.set(manifest)
     annolist = list()
-
-    for i in currentvals.keys():
-        if currentvals[i]['type'] == 'annotator':
+    for i in manifest.keys():
+        if manifest[i]['type'] == 'annotator':
             if (("chasmplus_" in str(i)) or ("segway_" in str(i))):
                 pass
             else:
