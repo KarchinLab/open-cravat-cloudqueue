@@ -70,19 +70,23 @@ def access_control(admin):
         return wrapper
     return user_login
 
-
-def fetch_new_list():
+def fetch_manifest():
     mani_ref = db.collection('environment').document('manifest')
-    st = time.time()
     mani_doc = mani_ref.get()
     if mani_doc.exists and dt.datetime.now(dt.timezone.utc) - mani_doc.update_time < dt.timedelta(hours=1):
+        print('manifest from cache')
         manifest = mani_doc.to_dict()
     else:
+        print('manifest from source')
         url = 'https://store.opencravat.org/manifest.yml'
         data = requests.get(url)
         out = data.content
         manifest = yaml.load(out, Loader=yaml.FullLoader)
         mani_ref.set(manifest)
+    return manifest
+
+def fetch_new_list():
+    manifest = fetch_manifest()
     annolist = list()
     for i in manifest.keys():
         if manifest[i]['type'] == 'annotator':
@@ -92,16 +96,11 @@ def fetch_new_list():
                 annolist.append(i)
         else:
             pass
-
     return annolist
 
 @app.route('/manifest')
 def manifest():
-    url = 'https://store.opencravat.org/manifest.yml'
-    data = requests.get(url)
-    out = data.content
-    currentvals = yaml.load(out, Loader=yaml.FullLoader)
-    return currentvals
+    return fetch_manifest()
 
 @app.route('/markdown')
 def markdown():
