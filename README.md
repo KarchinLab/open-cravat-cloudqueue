@@ -18,6 +18,13 @@ Once you have your cloudshell running you'll need to clone the repository for th
 username@cloudshell:~$ git clone git@github.com:kmoad/ocq-deploy.git
 username@cloudshell:~$ cd ocq-deploy
 ```
+
+Copy `config.yml.template` to `config.yml` so that you can add settings specific to your project.
+
+```console
+username@cloudshell:~$ cp config.yml.template config.yml
+```
+
 Edit the config.yml using Nano, VIM, or the visual editor. The visual editor can be accessed with the button below.
 
 <img src="./images/open-editor-button.png" width="800" title="editor button">

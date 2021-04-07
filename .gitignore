@@ -73,3 +73,6 @@ env.sh
 
 # Visual Studio Code files
 .vscode
+
+# Project specific config
+config.yml
