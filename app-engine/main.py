@@ -73,11 +73,9 @@ def access_control(admin):
 def fetch_manifest():
     mani_ref = db.collection('environment').document('manifest')
     mani_doc = mani_ref.get()
-    if mani_doc.exists and dt.datetime.now(dt.timezone.utc) - mani_doc.update_time < dt.timedelta(hours=1):
-        print('manifest from cache')
+    if mani_doc.exists and dt.datetime.now(dt.timezone.utc) - mani_doc.update_time < dt.timedelta(hours=24):
         manifest = mani_doc.to_dict()
     else:
-        print('manifest from source')
         url = 'https://store.opencravat.org/manifest.yml'
         data = requests.get(url)
         out = data.content
