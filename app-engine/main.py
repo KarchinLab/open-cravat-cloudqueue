@@ -76,6 +76,7 @@ def fetch_manifest():
     if mani_doc.exists and dt.datetime.now(dt.timezone.utc) - mani_doc.update_time < dt.timedelta(hours=24):
         manifest = mani_doc.to_dict()
     else:
+        print('from source')
         url = 'https://store.opencravat.org/manifest.yml'
         data = requests.get(url)
         out = data.content
@@ -104,10 +105,18 @@ def manifest():
 def markdown():
     mname = request.args.get('module')
     version = request.args.get('version')
-    url = f'https://store.opencravat.org/modules/{mname}/{version}/{mname}.md'
-    r = requests.get(url)
-    r.raise_for_status()
-    return r.text
+    mdoc_ref = db.collection('environment').document('manifest').collection('module-doc').document(mname)
+    mdoc = mdoc_ref.get()
+    md_text = None
+    if mdoc.exists and dt.datetime.now(dt.timezone.utc) - mdoc.update_time < dt.timedelta(hours=24):
+        md_text = mdoc.to_dict().get('data')
+    if md_text is None:
+        url = f'https://store.opencravat.org/modules/{mname}/{version}/{mname}.md'
+        r = requests.get(url)
+        r.raise_for_status()
+        md_text = r.text
+        mdoc_ref.set({'data':md_text})
+    return md_text
 
 def create_db_anno_list(newannolist):
     newlist = newannolist
