@@ -171,6 +171,16 @@ gcloud beta functions deploy $OCQ_INSTANCE_CREATE_FUNC \
     --trigger-event=providers/cloud.firestore/eventTypes/document.update \
     --trigger-resource="projects/$GCP_PROJECT/databases/(default)/documents/environment/annotators" \
     --env-vars-file env.yml
+gcloud beta functions deploy $OCQ_IMAGE_CREATE_FUNC \
+    --source=image-cleanup/ \
+    --runtime=python38 \
+    --entry-point main \
+    --service-account $OCQ_SERVICE_ACCOUNT_EMAIL \
+    --memory=256MB \
+    --timeout=500s \
+    --trigger-event=providers/cloud.firestore/eventTypes/document.write \
+    --trigger-resource="projects/$GCP_PROJECT/databases/(default)/documents/environment/imageTrigger" \
+    --env-vars-file env.yml
 gcloud functions deploy $OCQ_JOB_START_FUNC \
     --source cloud-functions/ \
     --runtime python38 \

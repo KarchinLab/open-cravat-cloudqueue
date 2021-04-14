@@ -8,9 +8,9 @@ body {
   display: grid;
   grid-gap: 10px;
   grid-template-areas:
-    'nav nav'
-    'image-div user-div';
-  grid-template-columns: auto auto;
+    'nav nav nav'
+    'image-div status-div user-div';
+  grid-template-columns: auto auto auto;
   grid-template-rows: auto 1fr;
   height: 100vh;
 }
@@ -24,11 +24,14 @@ body {
   padding-left: 10px;
 }
 
+#status-div {
+  grid-area: status-div;
+  padding-left: 10px;
+}
 #user-div {
   grid-area: user-div;
   padding-right: 10px;
 }
-
 #module-panel {
   position: fixed;
   width: 80%;
@@ -78,4 +81,12 @@ body {
 }
 .module-panel-detail-row {
   margin-bottom: 1em;
+}
+#anno-info {
+  display: flex;
+  flex-direction: column;
+}
+#tablewrap {
+  height: 70vh;
+  overflow-y: scroll;
 }

@@ -8,6 +8,9 @@ OCQ_SERVICE_ACCOUNT_EMAIL="$OCQ_SERVICE_ACCOUNT_NAME@$GCP_PROJECT.iam.gserviceac
 # Functions
 gcloud functions delete $OCQ_JOB_START_FUNC --quiet
 gcloud functions delete $OCQ_JOB_DONE_FUNC --quiet
+gcloud functions delete $OCQ_INSTANCE_CREATE_FUNC --quiet
+gcloud functions delete $OCQ_IMAGE_CREATE_FUNC --quiet
+
 
 # Subscriptions
 gcloud pubsub subscriptions delete $OCQ_JOB_START_SUB

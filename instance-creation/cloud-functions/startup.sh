@@ -31,13 +31,11 @@ oc module install-base
 
 oc module install -y $ANNOTATORS
 
-gcloud compute images create oc-runner-updated-$STAMP --force --family oc-runner-images --source-disk oc-source-instance --source-disk-zone $ZONE
-
-python3 - <<'END_SCRIPT'
+STAMP=$STAMP python3 - <<'END_SCRIPT'
 from firebase_admin import firestore
+import os
+stamp = os.environ['STAMP']
 db = firestore.Client()
-doc_ref = db.collection(u'environment').document(u'imageStatus')
-doc_ref.update({u'imageStatus' : "Ready"})
+doc_ref = db.collection(u'environment').document(u'imageTrigger')
+doc_ref.update({u'imageTrigger' : stamp})
 END_SCRIPT
-
-gcloud compute instances delete $(hostname) --quiet --zone=$ZONE
