@@ -87,9 +87,22 @@ function loadApprovedUsers () {
 }
 
 
-$(()=>{
-  $("#createimage").click(()=>{
-    var msoutput = ($("#annotatms").val());
+//$(()=>{
+//  $("#createimage").click(()=>{
+//    var msoutput = [];
+//    $('[name="annotator"]:checked').each(function(checkbox) {msoutput.push(checkbox);});
+//    fetch('/show_selected', {
+//        method: 'POST',
+//        headers: {'Content-Type': 'application/json'},
+//        body: JSON.stringify({msoutput}),
+//   })
+//      .catch((error) => {console.error('Error:', error);
+//    });
+//    //$('#annotatms').val('');    
+//  });
+//});
+function createImage() {
+    var msoutput = $('input[type="checkbox"][name="annotator"]:checked').map(function() { return this.value; }).get();
     fetch('/show_selected', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -97,10 +110,9 @@ $(()=>{
     })
       .catch((error) => {console.error('Error:', error);
     });
-    $('#annotatms').val('');    
-  });
-});
-
+    //$('#annotatms').val('');    
+  }
+  
 function addNewUser() {
   var newUser = document.getElementById("newUser").value;
   var userRef = firebase.firestore().collection('environment').doc('authorized-users');
