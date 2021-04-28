@@ -23,12 +23,12 @@ cd $execDir
 
 gsutil cp $INPUT .
 gsutil cp $CONFIG .
-oc run $FILENAME -c $CONFIGFILENAME -t csv 2>&1 | tee oc-cfrun-$STAMP-commandout.txt
+oc run $FILENAME -c $CONFIGFILENAME -t csv --module-option csvreporter.zip=true 2>&1 | tee oc-cfrun-$STAMP-commandout.txt
 outputDir="gs://$BUCKET/$BASEFILEPATH/$FILENAME-$STAMP/"
 gsutil cp $FILENAME.sqlite $outputDir
 gsutil cp $FILENAME.log $outputDir
 gsutil cp $FILENAME.err $outputDir
-gsutil cp $FILENAME.variant.csv $outputDir
+gsutil cp $FILENAME.csv.zip $outputDir
 gsutil cp oc-cfrun-$STAMP-commandout.txt $outputDir
 msg="{\"jobId\":\"$JOB_ID\",\"dbPath\":\"$BASEFILEPATH/$FILENAME-$STAMP/$FILENAME.sqlite\"}"
 echo msg
