@@ -161,6 +161,13 @@ function modulePanel(moduleName) {
     .text(minfo.description)
     .addClass('module-panel-detail-row')
     );
+  detailSection.append($(document.createElement('div'))
+    .addClass('module-panel-detail-row')
+    .append($(document.createElement('a'))
+      .text('Website')
+      .attr('href', minfo.developer.website)
+      .attr('target','_blank')
+    ));
   const detailRow = (header, content) => {
     const div = $(document.createElement('div'))
       .addClass('module-panel-detail-row');
@@ -176,7 +183,6 @@ function modulePanel(moduleName) {
   }
   detailSection.append(detailRow('Version',minfo['latest_version']));
   detailSection.append(detailRow('Source version',minfo.data_versions[minfo['latest_version']]));
-  detailSection.append(detailRow('Website',minfo.developer.website));
   detailSection.append(detailRow('Citation',minfo.developer.citation));
   detailSection.append(detailRow('Size',humanBytes(minfo.size)));
 
