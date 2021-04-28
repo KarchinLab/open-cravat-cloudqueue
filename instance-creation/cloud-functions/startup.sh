@@ -28,7 +28,7 @@ END_SCRIPT
 pip3 install --upgrade open-cravat
 
 oc module install-base
-
+oc module install csvreporter
 oc module install -y $ANNOTATORS
 
 STAMP=$STAMP python3 - <<'END_SCRIPT'
