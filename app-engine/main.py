@@ -125,22 +125,7 @@ def create_db_anno_list(newannolist):
 
 @app.route('/')
 def root():
-    id_token = request.cookies.get("token")
-    error_message = None
-    claims = None
-    times = None
-    annolist = None
-
-    if id_token:
-        try:
-            claims = google.oauth2.id_token.verify_firebase_token(
-                id_token, firebase_request_adapter)
-            annolist = fetch_new_list()
-        except ValueError as exc:
-            error_message = str(exc)
-    return render_template(
-        'index.html',
-        user_data=claims, error_message=error_message, annolist=annolist)
+    return render_template('index.html')
 
 @app.route('/submit')
 @access_control(admin=False)
