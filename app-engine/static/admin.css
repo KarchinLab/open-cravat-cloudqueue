@@ -90,3 +90,6 @@ body {
   height: 70vh;
   overflow-y: scroll;
 }
+#notepadcell {
+  padding-left: 20px;
+}

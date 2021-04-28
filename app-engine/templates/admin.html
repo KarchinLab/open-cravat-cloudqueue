@@ -37,10 +37,12 @@
 	        {% for attr in annolist %}
 	          <tr>
                     <td>
-	              <input type="checkbox" name="annotator" value={{attr}}>{{attr}}<br>
+	              <label><input type="checkbox" name="annotator" value={{attr}}>&nbsp;{{attr}}<br></label>
 		    </td>
-		    <td>
-	              <img src="static/img/notepad.png" width=20px height=20px>
+		    <td id="notepadcell">
+			    <a href="javascript:modulePanel('{{attr}}');">
+			      <img src="static/img/notepad.png" width=20px height=20px>
+		      </a>
 		    </td>
 		  </tr>
                 {% endfor %}
