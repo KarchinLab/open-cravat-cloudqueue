@@ -221,7 +221,8 @@ def job_done(event, context):
             'code':40,
             'display':'Done'
         },
-        'output':db_path,
+        'output.database':db_path,
+        'output.csv':csv_path,
     })
     subscriber.acknowledge(request={
         "subscription": subscription_path,
