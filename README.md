@@ -15,8 +15,8 @@ For ease you should expand the cloudshell to a larger window.
 Once you have your cloudshell running you'll need to clone the repository for this project and change directory into the cloned project
 
 ```console
-username@cloudshell:~$ git clone git@github.com:kmoad/ocq-deploy.git
-username@cloudshell:~$ cd ocq-deploy
+username@cloudshell:~$ git clone git@github.com:KarchinLab/open-cravat-cloudqueue.git
+username@cloudshell:~$ cd open-cravat-cloudqueue.git
 ```
 
 Copy `config.yml.template` to `config.yml` so that you can add settings specific to your project.
