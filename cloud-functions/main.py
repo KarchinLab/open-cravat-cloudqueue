@@ -214,13 +214,17 @@ def job_done(event, context):
     msgd = json.loads(msg.message.data.decode('utf8'))
     job_id = msgd['jobId']
     db_path = msgd['dbPath']
+    csv_path = msgd['csvPath']
     job_doc = db.collection('jobs').document(job_id)
     job_doc.update({
         'status':{
             'code':40,
             'display':'Done'
         },
-        'output':db_path,
+        'output':{
+            'database':db_path,
+            'csv':csv_path
+        }
     })
     subscriber.acknowledge(request={
         "subscription": subscription_path,

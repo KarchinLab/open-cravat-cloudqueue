@@ -30,7 +30,7 @@ gsutil cp $FILENAME.log $outputDir
 gsutil cp $FILENAME.err $outputDir
 gsutil cp $FILENAME.csv.zip $outputDir
 gsutil cp oc-cfrun-$STAMP-commandout.txt $outputDir
-msg="{\"jobId\":\"$JOB_ID\",\"dbPath\":\"$BASEFILEPATH/$FILENAME-$STAMP/$FILENAME.sqlite\"}"
+msg="{\"jobId\":\"$JOB_ID\",\"dbPath\":\"$BASEFILEPATH/$FILENAME-$STAMP/$FILENAME.sqlite\",\"csvPath\":\"$BASEFILEPATH/$FILENAME-$STAMP/$FILENAME.csv.zip\"}"
 echo msg
 gcloud pubsub topics publish $DONETOPIC --message $msg
 gsutil cp /var/log/messages $outputDir/
