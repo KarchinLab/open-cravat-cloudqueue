@@ -95,7 +95,7 @@ def fetch_new_list():
                 annolist.append(i)
         else:
             pass
-    return annolist
+    return sorted(annolist)
 
 @app.route('/manifest')
 def manifest():
