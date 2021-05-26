@@ -28,3 +28,8 @@ body {
   grid-area: jobs;
   padding-right: 10px;
 }
+
+#download-popover {
+  display: none;
+  position: fixed;
+}
