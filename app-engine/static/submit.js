@@ -197,7 +197,7 @@ function showDownloadPopover(event) {
     if (job.hasOwnProperty('output') && job.output != null) {
         if (typeof(job.output) === 'object') {
             dbPath = job.output.database ? job.output.database : null;
-            csvPath = job.output.csv ? job.output.database : null;
+            csvPath = job.output.csv ? job.output.csv : null;
         } else if (typeof(job.output) === 'string') {
             dbPath = job.output;
             csvPath = null;
