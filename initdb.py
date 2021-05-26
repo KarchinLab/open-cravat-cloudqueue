@@ -31,7 +31,3 @@ if users_ref.get().exists:
     anno_ref.update(users_content)
 else:
     users_ref.create(users_content)
-
-manifest_ref = db.collection('environment').document('manifest')
-if not manifest_ref.get().exists:
-    manifest_ref.create(None)
