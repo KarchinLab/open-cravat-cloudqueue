@@ -208,6 +208,8 @@ function hideModulePanel() {
 }
 
 async function showMD(moduleName, version) {
+  const description = $('#module-panel-description');
+  description.empty();
   const url = new URL('/markdown', window.location.href);
   url.search = new URLSearchParams({'module':moduleName,'version':version}).toString();
   const response = await fetch(url);
@@ -224,8 +226,6 @@ async function showMD(moduleName, version) {
       img.style.margin = 'auto';
       img.style['max-width'] = '100%';
   }
-  const description = $('#module-panel-description');
-  description.empty();
   description.append(mdElements);
 }
 
